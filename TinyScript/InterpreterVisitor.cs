@@ -52,7 +52,7 @@ namespace TinyScript
             {
                 if (obj.GetType() != r.GetType())
                 {
-                    throw context.Exception("Cannot assign [{1}] type value to a variable with type [{0}].", obj.GetType(), r.GetType());
+                    throw context.Exception("Cannot assign [{1}] type value to a variable with type [{0}].", obj.GetType().Name, r.GetType().Name);
                 }
             }
             Variables[name] = r;
@@ -243,7 +243,7 @@ namespace TinyScript
             {
                 return (string)a == (string)b;
             }
-            throw ctx.Exception("Cannot compare [{0}] and [{1}]", a.GetType(), b.GetType());
+            throw ctx.Exception("Cannot compare [{0}] and [{1}]", a.GetType().Name, b.GetType().Name);
         }
 
         public override object VisitIfStatement([NotNull] TinyScriptParser.IfStatementContext context)
@@ -257,7 +257,7 @@ namespace TinyScript
             {
                 VisitBlockStatement(context.blockStatement(1));
             }
-            return 0;
+            return null;
         }
 
         public override object VisitWhileStatement([NotNull] TinyScriptParser.WhileStatementContext context)
@@ -268,7 +268,7 @@ namespace TinyScript
                 if (!(condition)) { break; }
                 VisitBlockStatement(context.blockStatement());
             }
-            return 0;
+            return null;
         }
 
         public override object VisitDoWhileStatement([NotNull] TinyScriptParser.DoWhileStatementContext context)
@@ -279,7 +279,7 @@ namespace TinyScript
                 VisitBlockStatement(context.blockStatement());
                 condition = (bool)VisitExpression(context.expression());
             } while (condition);
-            return 0;
+            return null;
         }
 
         public override object VisitForStatement([NotNull] TinyScriptParser.ForStatementContext context)
