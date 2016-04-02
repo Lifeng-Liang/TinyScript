@@ -1,26 +1,16 @@
 ﻿<Properties StartupItem="TinyScript/TinyScript.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="TinyScript.UnitTest/ExpressionTest.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="TinyScript.UnitTest/ExpressionCompilerTest.cs">
     <Files>
-      <File FileName="TinyScript.UnitTest/ExpressionTest.cs" Line="67" Column="57" />
+      <File FileName="TinyScript.UnitTest/ExpressionTest.cs" Line="67" Column="49" />
       <File FileName="TinyScript.UnitTest/ScriptTest.cs" Line="1" Column="1" />
-      <File FileName="TinyScript.UnitTest/TestBase.cs" Line="24" Column="18" />
+      <File FileName="TinyScript.UnitTest/TestBase.cs" Line="1" Column="1" />
+      <File FileName="TinyScript.UnitTest/ExpressionCompilerTest.cs" Line="15" Column="27" />
     </Files>
     <Pads>
       <Pad Id="MonoDevelop.NUnit.TestPad">
         <State name="__root__">
-          <Node name="TinyScript" expanded="True">
-            <Node name="TinyScript.UnitTest" expanded="True">
-              <Node name="TinyScript" expanded="True">
-                <Node name="UnitTest" expanded="True">
-                  <Node name="ExpressionTest" expanded="True">
-                    <Node name="TestExpression" selected="True" />
-                  </Node>
-                  <Node name="TestScript" expanded="True" />
-                </Node>
-              </Node>
-            </Node>
-          </Node>
+          <Node name="TinyScript" expanded="True" selected="True" />
         </State>
       </Pad>
     </Pads>
