@@ -47,6 +47,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builder\BooleanOpBuilder.cs" />
+    <Compile Include="Builder\DecimalOpBuilder.cs" />
+    <Compile Include="Builder\IlBuilder.cs" />
+    <Compile Include="Builder\OpBuilder.cs" />
+    <Compile Include="Builder\StringOpBuilder.cs" />
+    <Compile Include="CompilerVisitor.cs" />
     <Compile Include="CoreHelper.cs" />
     <Compile Include="Channel.cs" />
     <Compile Include="InterpreterVisitor.cs" />
@@ -58,6 +64,7 @@
     <Compile Include="Parser\TinyScriptLexer.cs" />
     <Compile Include="Parser\TinyScriptParser.cs" />
     <Compile Include="Parser\TinyScriptVisitor.cs" />
+    <Compile Include="Saveable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

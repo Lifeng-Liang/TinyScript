@@ -52,9 +52,7 @@ print( ""abc"" == ""abc1"" );
 print( 3 < 4 );
 print( 3 >= 3 );
 ";
-            var r = new Runner(MockChannel.Instance);
-            r.Run(script);
-            AssertIs(@"11.5
+            AssertIs(script, @"11.5
 7
 True
 24.0
@@ -96,9 +94,7 @@ while(i<=100)
 }
 
 print(""sum 1 to 100 is : "" + sum);";
-            var r = new Runner(MockChannel.Instance);
-            r.Run(script);
-            AssertIs("sum 1 to 100 is : 5050");
+            AssertIs(script, "sum 1 to 100 is : 5050");
         }
 
         [Test]
@@ -114,9 +110,7 @@ do
 
 string msg = ""sum 1 to 100 is : "" + sum;
 print(msg);";
-            var r = new Runner(MockChannel.Instance);
-            r.Run(script);
-            AssertIs("sum 1 to 100 is : 5050");
+            AssertIs(script, "sum 1 to 100 is : 5050");
         }
 
         [Test]
@@ -132,9 +126,7 @@ for (var i = 1; i <= 10; i=i+1 ) {
 	print(fib1);
 }
 ";
-            var r = new Runner(MockChannel.Instance);
-            r.Run(script);
-            AssertIs(@"2
+            AssertIs(script, @"2
 3
 5
 8

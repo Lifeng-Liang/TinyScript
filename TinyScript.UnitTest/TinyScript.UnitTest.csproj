@@ -41,7 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExpressionCompilerTest.cs" />
     <Compile Include="MockChannel.cs" />
+    <Compile Include="MockIlBuilder.cs" />
+    <Compile Include="ScriptCompilerTest.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ExpressionTest.cs" />

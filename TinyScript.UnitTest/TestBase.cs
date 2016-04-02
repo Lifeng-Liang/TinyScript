@@ -18,9 +18,10 @@ namespace TinyScript.UnitTest
             MockChannel.Instance.Cache.Clear();
         }
 
-		protected void AssertIs(Runner r, string script,  string exp)
+		protected virtual void AssertIs(string script,  string exp)
 		{
-			r.Run(script);
+            var r = new Runner(new InterpreterVisitor(MockChannel.Instance));
+            r.Run(script);
 			AssertIs(exp);
 		}
     }

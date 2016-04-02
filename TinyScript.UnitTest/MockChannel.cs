@@ -12,10 +12,9 @@ namespace TinyScript.UnitTest
         {
         }
 
-        public override void Print(string message, params object[] args)
+        public override void Print(string msg)
         {
-            Cache.AppendFormat(message, args);
-            Cache.AppendLine();
+            Cache.AppendLine(msg);
         }
     }
 }

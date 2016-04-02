@@ -4,3 +4,5 @@ TinyScript/bin
 TinyScript.UnitTest/obj
 TinyScript.UnitTest/bin
 /.vs/TinyScript/v14/*.suo
+
+*.userprefs

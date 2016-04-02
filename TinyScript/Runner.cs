@@ -1,30 +1,16 @@
 ﻿using Antlr4.Runtime;
-using System;
 using System.IO;
 using System.Text;
 
 namespace TinyScript
 {
-    public enum RunnerType
-    {
-        Interpreter,
-        Compiler
-    }
-
     public class Runner
     {
-        private ITinyScriptVisitor<object> _visitor;
+        private TinyScriptBaseVisitor<object> _visitor;
 
-        public Runner(Channel channel, RunnerType type = RunnerType.Interpreter)
+        public Runner(TinyScriptBaseVisitor<object> visitor)
         {
-            switch (type)
-            {
-                case RunnerType.Interpreter:
-                    _visitor = new InterpreterVisitor(channel);
-                    break;
-                default:
-                    throw new Exception("Unsupported Runner Type.");
-            }
+            _visitor = visitor;
         }
 
         public void Run(string script)
@@ -45,6 +31,11 @@ namespace TinyScript
             parser.BuildParseTree = true;
             var tree = parser.program();
             _visitor.Visit(tree);
+            var v = _visitor as ISaveable;
+            if(v != null)
+            {
+                v.Save();
+            }
         }
     }
 }

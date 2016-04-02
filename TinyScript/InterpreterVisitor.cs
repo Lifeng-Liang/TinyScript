@@ -20,6 +20,11 @@ namespace TinyScript
             foreach (var assign in assigns)
             {
                 var name = assign.Identifier().GetText();
+                object obj;
+                if(Variables.TryGetValue(name, out obj))
+                {
+                    throw context.Exception("Variable [{0}] already defined.", name);
+                }
                 switch (context.basicType().GetText())
                 {
                     case "decimal":
@@ -45,14 +50,14 @@ namespace TinyScript
             object obj;
             if (!Variables.TryGetValue(name, out obj))
             {
-                throw context.Exception("Variable [{0}] should be definded first.", name);
+                throw context.Exception("Variable [{0}] not defined.", name);
             }
             var r = base.VisitAssign(context);
             if (obj != null)
             {
                 if (obj.GetType() != r.GetType())
                 {
-                    throw context.Exception("Cannot assign [{1}] type value to a variable with type [{0}].", obj.GetType().Name, r.GetType().Name);
+                    throw context.Exception("Cannot convert type [{1}] to [{0}].", obj.GetType().Name, r.GetType().Name);
                 }
             }
             Variables[name] = r;
@@ -62,7 +67,7 @@ namespace TinyScript
         public override object VisitPrintStatement([NotNull] TinyScriptParser.PrintStatementContext context)
         {
             var r = VisitExpression(context.expression());
-            _channel.Print(r);
+            _channel.Print(r.ToString());
             return null;
         }
 
@@ -197,7 +202,7 @@ namespace TinyScript
             object obj;
             if (!Variables.TryGetValue(n, out obj))
             {
-                throw context.Exception("Use of undeclared identifier [{0}]", n);
+                throw context.Exception("Use of undeclared identifier [{0}].", n);
             }
             return obj;
         }
@@ -243,7 +248,7 @@ namespace TinyScript
             {
                 return (string)a == (string)b;
             }
-            throw ctx.Exception("Cannot compare [{0}] and [{1}]", a.GetType().Name, b.GetType().Name);
+            throw ctx.Exception("Cannot do operation between [{0}] and [{1}].", a.GetType().Name, b.GetType().Name);
         }
 
         public override object VisitIfStatement([NotNull] TinyScriptParser.IfStatementContext context)
