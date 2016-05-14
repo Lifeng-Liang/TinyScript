@@ -3,15 +3,14 @@
 namespace TinyScript.UnitTest
 {
     [TestFixture]
-    public class ExpressionCompilerTest : ExpressionTest
+    public class ExpressionJitCompilerTest : ExpressionTest
     {
         protected override void AssertIs(string script, string exp)
         {
             var builder = new MockIlBuilder();
             var r = new Runner(new CompilerVisitor(builder));
             r.Run(script);
-            var main = builder.GenType.GetMethod("Main");
-            main.Invoke(null, new object[0]);
+            builder.GenType.RunMain();
             AssertIs(exp);
         }
     }

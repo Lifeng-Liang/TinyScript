@@ -56,6 +56,7 @@
     <Compile Include="CoreHelper.cs" />
     <Compile Include="Channel.cs" />
     <Compile Include="InterpreterVisitor.cs" />
+    <Compile Include="JitBuilder.cs" />
     <Compile Include="ParserRuleContextException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

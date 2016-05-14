@@ -6,7 +6,7 @@ namespace TinyScript
 {
     public class Runner
     {
-        private TinyScriptBaseVisitor<object> _visitor;
+        private readonly TinyScriptBaseVisitor<object> _visitor;
 
         public Runner(TinyScriptBaseVisitor<object> visitor)
         {
@@ -27,15 +27,11 @@ namespace TinyScript
             var ais = new AntlrInputStream(stream);
             var lexer = new TinyScriptLexer(ais);
             var tokens = new CommonTokenStream(lexer);
-            var parser = new TinyScriptParser(tokens);
-            parser.BuildParseTree = true;
+            var parser = new TinyScriptParser(tokens) {BuildParseTree = true};
             var tree = parser.program();
             _visitor.Visit(tree);
             var v = _visitor as ISaveable;
-            if(v != null)
-            {
-                v.Save();
-            }
+            v?.Save();
         }
     }
 }

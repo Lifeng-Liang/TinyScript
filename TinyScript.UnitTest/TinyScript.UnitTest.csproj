@@ -44,7 +44,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExpressionCompilerTest.cs" />
+    <Compile Include="ExpressionJitCompilerTest.cs" />
     <Compile Include="MockChannel.cs" />
     <Compile Include="MockIlBuilder.cs" />
     <Compile Include="ScriptCompilerTest.cs" />

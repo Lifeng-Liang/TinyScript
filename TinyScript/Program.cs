@@ -19,16 +19,24 @@ namespace TinyScript
                 {
                     if(args.Length == 2)
                     {
-                        if(args[1].StartsWith("-out:"))
+                        if (args[1].StartsWith("-out:"))
                         {
                             var exeName = args[1].Substring(5);
-                            if(!string.IsNullOrEmpty(exeName))
+                            if (!string.IsNullOrEmpty(exeName))
                             {
                                 var builder = new IlBuilder(exeName);
                                 var v = new CompilerVisitor(builder);
                                 Run(v, s);
                                 return;
                             }
+                        }
+                        else if(args[1] == "-jit")
+                        {
+                            var builder = new JitBuilder();
+                            var v = new CompilerVisitor(builder);
+                            Run(v, s);
+                            builder.GenType.RunMain();
+                            return;
                         }
                         ShowHelp();
                     }
@@ -53,9 +61,10 @@ namespace TinyScript
         private static void ShowHelp()
         {
             Console.WriteLine(@"Usage :
-    ts ScriptFileName [-out:output.exe]
+    ts ScriptFileName [-jit | -out:output.exe]
 Example:
     ts test.ts
+    ts test.ts -jit
     ts test.ts -out:test.exe");
         }
     }

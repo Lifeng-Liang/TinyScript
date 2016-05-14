@@ -1,36 +1,15 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Reflection.Emit;
-using TinyScript.Builder;
 
 namespace TinyScript.UnitTest
 {
-    public class MockIlBuilder : IlBuilder
+    public class MockIlBuilder : JitBuilder
     {
-        private static MethodInfo _print = typeof(MockIlBuilder).GetMethod("Print");
-        private static int _index = 0;
-
-        public Type GenType;
-
-        public MockIlBuilder() : base("UnitTestAssm.dll", "p" + _index)
-        {
-            _index++;
-        }
-
-        protected override MethodBuilder BuildMain()
-        {
-            return _program.DefineMethod("Main", MethodAttributes.Static | MethodAttributes.Public, null, new Type[0]);
-        }
+        private static readonly MethodInfo _print = typeof(MockIlBuilder).GetMethod("Print");
 
         public override void EmitPrint()
         {
-            _builder.Emit(OpCodes.Call, _print);
-        }
-
-        public override void Save()
-        {
-            _builder.Emit(OpCodes.Ret);
-            GenType = _program.CreateType();
+            Builder.Emit(OpCodes.Call, _print);
         }
 
         public static void Print(string msg)

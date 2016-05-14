@@ -16,7 +16,7 @@ namespace TinyScript
         }
 
         private readonly IlBuilder _builder;
-        private Dictionary<string, Variable> _variables = new Dictionary<string, Variable>();
+        private readonly Dictionary<string, Variable> _variables = new Dictionary<string, Variable>();
 
         public CompilerVisitor(IlBuilder builder)
         {
@@ -69,9 +69,9 @@ namespace TinyScript
             Variable value;
             if(_variables.TryGetValue(name, out value))
             {
-                LocalBuilder variable;
                 if (value.Value == null)
                 {
+                    LocalBuilder variable;
                     if(value.Type == null)
                     {
                         variable = _builder.DeclareLocal(type);

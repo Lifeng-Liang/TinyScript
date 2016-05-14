@@ -6,150 +6,158 @@ namespace TinyScript.Builder
 {
     public class IlBuilder
     {
-        private static MethodInfo _print = typeof(Console).GetMethod("WriteLine", new Type[] { typeof(string) });
-        protected readonly AssemblyBuilder _innerAssembly;
-        protected readonly ModuleBuilder _innerModule;
-        protected TypeBuilder _program;
-        protected MethodBuilder _main;
-        protected readonly ILGenerator _builder;
-        protected string _exeName;
+        private static readonly MethodInfo Print = typeof(Console).GetMethod("WriteLine", new[] { typeof(string) });
+        protected readonly AssemblyBuilder InnerAssembly;
+        protected readonly ModuleBuilder InnerModule;
+        protected TypeBuilder Program;
+        protected MethodBuilder Main;
+        protected readonly ILGenerator Builder;
+        protected string ExeName;
 
         public IlBuilder(string exeName, string className = "Program")
         {
-            _exeName = exeName;
+            ExeName = exeName;
             var an = new AssemblyName("TinyScript");
-            _innerAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
+            InnerAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
                 an, AssemblyBuilderAccess.RunAndSave);
-            _innerModule = _innerAssembly.DefineDynamicModule("TinyScript", _exeName);
-            _builder = InitMain(className);
+            InnerModule = InnerAssembly.DefineDynamicModule("TinyScript", ExeName);
+            Builder = InitMain(className);
         }
 
         private ILGenerator InitMain(string className)
         {
-            _program = _innerModule.DefineType(className, TypeAttributes.BeforeFieldInit | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.NotPublic);
-            var ctor = _program.DefineDefaultConstructor(MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName);
-            _main = BuildMain();
-            _innerAssembly.SetEntryPoint(_main);
-            return _main.GetILGenerator();
+            Program = InnerModule.DefineType(className, TypeAttributes.BeforeFieldInit | TypeAttributes.AutoClass | TypeAttributes.AnsiClass | TypeAttributes.NotPublic);
+            Program.DefineDefaultConstructor(MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName);
+            Main = BuildMain();
+            InnerAssembly.SetEntryPoint(Main);
+            return Main.GetILGenerator();
         }
 
         protected virtual MethodBuilder BuildMain()
         {
-            return _program.DefineMethod("Main", MethodAttributes.Static | MethodAttributes.Private | MethodAttributes.HideBySig, null, new[] { typeof(string[]) });
+            return Program.DefineMethod("Main", MethodAttributes.Static | MethodAttributes.Private | MethodAttributes.HideBySig, null, new[] { typeof(string[]) });
+        }
+
+        public virtual void Run()
+        {
+            Builder.Emit(OpCodes.Ret);
+            var t = Program.CreateType();
+            var main = t.GetMethod("Main");
+            main.Invoke(null, new object[0]);
         }
 
         public virtual void Save()
         {
-            _builder.Emit(OpCodes.Ret);
-            _program.CreateType();
-            _innerAssembly.Save(_exeName);
+            Builder.Emit(OpCodes.Ret);
+            Program.CreateType();
+            InnerAssembly.Save(ExeName);
         }
 
         public LocalBuilder DeclareLocal(Type type)
         {
-            return _builder.DeclareLocal(type);
+            return Builder.DeclareLocal(type);
         }
 
         public Label DefineLabel()
         {
-            return _builder.DefineLabel();
+            return Builder.DefineLabel();
         }
 
         public void MarkLabel(Label loc)
         {
-            _builder.MarkLabel(loc);
+            Builder.MarkLabel(loc);
         }
 
         public virtual void EmitPrint()
         {
-            _builder.Emit(OpCodes.Call, _print);
+            Builder.Emit(OpCodes.Call, Print);
         }
 
         public void LoadInt(int n)
         {
             switch(n)
             {
-                case 0: _builder.Emit(OpCodes.Ldc_I4_0); return;
-                case 1: _builder.Emit(OpCodes.Ldc_I4_1); return;
-                case 2: _builder.Emit(OpCodes.Ldc_I4_2); return;
-                case 3: _builder.Emit(OpCodes.Ldc_I4_3); return;
-                case 4: _builder.Emit(OpCodes.Ldc_I4_4); return;
-                case 5: _builder.Emit(OpCodes.Ldc_I4_5); return;
-                case 6: _builder.Emit(OpCodes.Ldc_I4_6); return;
-                case 7: _builder.Emit(OpCodes.Ldc_I4_7); return;
-                case 8: _builder.Emit(OpCodes.Ldc_I4_8); return;
+                case 0: Builder.Emit(OpCodes.Ldc_I4_0); return;
+                case 1: Builder.Emit(OpCodes.Ldc_I4_1); return;
+                case 2: Builder.Emit(OpCodes.Ldc_I4_2); return;
+                case 3: Builder.Emit(OpCodes.Ldc_I4_3); return;
+                case 4: Builder.Emit(OpCodes.Ldc_I4_4); return;
+                case 5: Builder.Emit(OpCodes.Ldc_I4_5); return;
+                case 6: Builder.Emit(OpCodes.Ldc_I4_6); return;
+                case 7: Builder.Emit(OpCodes.Ldc_I4_7); return;
+                case 8: Builder.Emit(OpCodes.Ldc_I4_8); return;
             }
-            _builder.Emit(OpCodes.Ldc_I4, n);
+            Builder.Emit(OpCodes.Ldc_I4, n);
         }
 
         public void LoadString(string text)
         {
-            _builder.Emit(OpCodes.Ldstr, text);
+            Builder.Emit(OpCodes.Ldstr, text);
         }
 
         public void LoadLocal(LocalBuilder local)
         {
-            _builder.Emit(OpCodes.Ldloc, local);
+            Builder.Emit(OpCodes.Ldloc, local);
         }
 
         public void LoadLocalAddress(LocalBuilder local)
         {
-            _builder.Emit(OpCodes.Ldloca, local);
+            Builder.Emit(OpCodes.Ldloca, local);
         }
 
         public void SetLocal(LocalBuilder local)
         {
-            _builder.Emit(OpCodes.Stloc, local);
+            Builder.Emit(OpCodes.Stloc, local);
         }
 
         public void Nop()
         {
-            _builder.Emit(OpCodes.Nop);
+            Builder.Emit(OpCodes.Nop);
         }
 
         public void BrFalse(Label loc)
         {
-            _builder.Emit(OpCodes.Brfalse, loc);
+            Builder.Emit(OpCodes.Brfalse, loc);
         }
 
         public void BrTrue(Label loc)
         {
-            _builder.Emit(OpCodes.Brtrue, loc);
+            Builder.Emit(OpCodes.Brtrue, loc);
         }
 
         public void Br(Label loc)
         {
-            _builder.Emit(OpCodes.Br, loc);
+            Builder.Emit(OpCodes.Br, loc);
         }
 
         public void Call(MethodInfo info)
         {
-            _builder.Emit(OpCodes.Call, info);
+            Builder.Emit(OpCodes.Call, info);
         }
 
         public void CallVirtual(MethodInfo info)
         {
-            _builder.Emit(OpCodes.Callvirt, info);
+            Builder.Emit(OpCodes.Callvirt, info);
         }
 
         public void Ceq()
         {
-            _builder.Emit(OpCodes.Ceq);
+            Builder.Emit(OpCodes.Ceq);
         }
 
         public void Or()
         {
-            _builder.Emit(OpCodes.Or);
+            Builder.Emit(OpCodes.Or);
         }
 
         public void And()
         {
-            _builder.Emit(OpCodes.And);
+            Builder.Emit(OpCodes.And);
         }
 
         public void Box(Type type)
         {
-            _builder.Emit(OpCodes.Box, type);
+            Builder.Emit(OpCodes.Box, type);
         }
     }
 }
