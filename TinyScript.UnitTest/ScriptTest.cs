@@ -137,5 +137,18 @@ for (var i = 1; i <= 10; i=i+1 ) {
 89
 144");
         }
+
+		[Test]
+		public void TestNestLoop()
+		{
+			var script = @"var n = """";
+for(var y=0; y<3; y=y+1) {
+	for(var x=0; x<3; x=x+1) {
+		n = n + x + y;
+	}
+}
+print(n);";
+			AssertIs(script, "001020011121021222");
+		}
     }
 }

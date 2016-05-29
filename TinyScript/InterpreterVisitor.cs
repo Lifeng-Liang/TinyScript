@@ -4,9 +4,21 @@ using System.Collections.Generic;
 
 namespace TinyScript
 {
+	public class VarValue
+	{
+		public int StartIndex;
+		public object Value;
+
+		public VarValue (int startIndex, object value)
+		{
+			StartIndex = startIndex;
+			Value = value;
+		}
+	}
+	
     public class InterpreterVisitor : TinyScriptBaseVisitor<object>
     {
-        private Dictionary<string, object> Variables = new Dictionary<string, object>();
+		private Dictionary<string, VarValue> Variables = new Dictionary<string, VarValue>();
         private Channel _channel;
 
         public InterpreterVisitor(Channel channel)
@@ -20,24 +32,27 @@ namespace TinyScript
             foreach (var assign in assigns)
             {
                 var name = assign.Identifier().GetText();
-                object obj;
+				VarValue obj;
                 if(Variables.TryGetValue(name, out obj))
                 {
-                    throw context.Exception("Variable [{0}] already defined.", name);
+					if (obj.StartIndex == assign.Start.StartIndex) {
+						return base.VisitDeclareExpression(context);
+					}
+					throw context.Exception("Variable [{0}] already defined.", name);
                 }
                 switch (context.basicType().GetText())
                 {
                     case "decimal":
-                        Variables.Add(name, (decimal)0);
+					Variables.Add(name, new VarValue(assign.Start.StopIndex, (decimal)0));
                         break;
                     case "string":
-                        Variables.Add(name, "");
+					Variables.Add(name, new VarValue(assign.Start.StopIndex, ""));
                         break;
                     case "bool":
-                        Variables.Add(name, false);
+					Variables.Add(name, new VarValue(assign.Start.StopIndex, false));
                         break;
                     case "var":
-                        Variables.Add(name, null);
+					Variables.Add(name, new VarValue(assign.Start.StopIndex, null));
                         break;
                 }
             }
@@ -47,20 +62,20 @@ namespace TinyScript
         public override object VisitAssign([NotNull] TinyScriptParser.AssignContext context)
         {
             var name = context.Identifier().GetText();
-            object obj;
+			VarValue obj;
             if (!Variables.TryGetValue(name, out obj))
             {
                 throw context.Exception("Variable [{0}] not defined.", name);
             }
             var r = base.VisitAssign(context);
-            if (obj != null)
+			if (obj != null && obj.Value != null)
             {
-                if (obj.GetType() != r.GetType())
+				if (obj.Value.GetType() != r.GetType())
                 {
-                    throw context.Exception("Cannot convert type [{1}] to [{0}].", obj.GetType().Name, r.GetType().Name);
+					throw context.Exception("Cannot convert type [{1}] to [{0}].", obj.Value.GetType().Name, r.GetType().Name);
                 }
             }
-            Variables[name] = r;
+			Variables[name] = new VarValue(obj.StartIndex, r);
             return null;
         }
 
@@ -199,12 +214,12 @@ namespace TinyScript
             {
                 return n.Substring(1, n.Length - 2);
             }
-            object obj;
+			VarValue obj;
             if (!Variables.TryGetValue(n, out obj))
             {
                 throw context.Exception("Use of undeclared identifier [{0}].", n);
             }
-            return obj;
+			return obj.Value;
         }
 
         public override object VisitCmpExpression([NotNull] TinyScriptParser.CmpExpressionContext context)
